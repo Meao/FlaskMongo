@@ -12,6 +12,7 @@ Versions py, pymongo, mongo compatibility https://docs.mongodb.com/drivers/pymon
 pip install -r requirements.txt
 touch app.py
 touch docker-compose.yml
+Dockerfile
 Compose and Docker compatibility https://docs.docker.com/compose/compose-file/
 copy flask .gitignore
 docker-compose up
@@ -21,7 +22,13 @@ git config --global init.defaultBranch main
 git init
 git add .
 git commit -m "initial app setup"
-
+mkdir flask
+mkdir nginx
+nginx.conf
+docker image ls
+docker image rm -f c303045067cb 
+chmod +x flask/server.py
+docker-compose up --build --remove-orphans 
 
 To install mongodb locally: on terminal in root
 sudo mkdir -p /data/db
