@@ -4,6 +4,7 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 client = MongoClient("mongo:27017")
+# how about initialising it with a test item and a decorator that only allows a func run once?
 db = client['products']
 collection = db['phones']
 
@@ -22,13 +23,21 @@ def create_phone():
         data = json.dumps(request.get_json())
     except:
         return "request unavailable", 400
-    # check type of data!!!
+    # check types of data json.dumps and request.get_json actually return
     if isinstance(data, list):
         data_created = collection.insert_many(data)
         return data_created.inserted_ids, 201
     else:
         data_created = collection.insert_one(data).inserted_id
         return data_created, 201
+
+@app.route('/api/phone/<id>', methods=['GET'])
+def read_phone(id):
+    try:
+        data_fetched = collection.find_one({"_id": id})
+        return json.dumps(data_fetched)
+    except:
+        return "No product found", 404
 
 @app.route('/api/phones/', methods=['GET'])
 def read_phone():
