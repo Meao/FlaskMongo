@@ -1,31 +1,44 @@
-from flask import Flask
+from flask import Flask, json, jsonify, request
 import os
 from pymongo import MongoClient
 
 app = Flask(__name__)
 client = MongoClient("mongo:27017")
+db = client['products']
+collection = db['phones']
 
 @app.route('/')
 def index():
     try:
         client.admin.command('ismaster')
     except:
-        return "Server not available"
-    return "Shop home page, the MongoDB client is running!\n"
+        return jsonify({'message': 'Server not available'})
+    return jsonify({'status': '200', 'message': 'Shop home page, the MongoDB client is running!\n'})
 
-@app.route('/phones/', methods=['POST'])
+@app.route('/api/phones/', methods=['POST'])
 def create_phone():
-    return "Under development"
+    try:
+        # look up if I need to check for sql injections in NoSql
+        data = json.dumps(request.get_json())
+    except:
+        return "request unavailable", 400
+    # check type of data!!!
+    if isinstance(data, list):
+        data_created = collection.insert_many(data)
+        return data_created.inserted_ids, 201
+    else:
+        data_created = collection.insert_one(data).inserted_id
+        return data_created, 201
 
-@app.route('/phones/', methods=['GET'])
+@app.route('/api/phones/', methods=['GET'])
 def read_phone():
     return "Under development"
 
-@app.route('/phones/', methods=['PUT'])
+@app.route('/api/phones/', methods=['PUT'])
 def update_phone():
     return "Under development"
 
-@app.route('/phones/', methods=['DELETE'])
+@app.route('/api/phones/', methods=['DELETE'])
 def delete_phone():
     return "Under development"
 
