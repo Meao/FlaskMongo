@@ -1,0 +1,34 @@
+In terminal in project folder
+python3 -m venv env
+source env/bin/activate
+touch requirements.txt
+docker -v
+docker pull mongo
+docker create -it --name MongoContainer -p 5000:27017 mongo
+docker start MongoContainer
+docker ps
+docker stop MongoContainer
+Versions py, pymongo, mongo compatibility https://docs.mongodb.com/drivers/pymongo/
+pip install -r requirements.txt
+touch app.py
+touch docker-compose.yml
+Compose and Docker compatibility https://docs.docker.com/compose/compose-file/
+copy flask .gitignore
+docker-compose up
+WARNING: Image for service web was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+check in browser  http://localhost:5000
+git config --global init.defaultBranch main
+git init
+git add .
+git commit -m "initial app setup"
+
+
+To install mongodb locally: on terminal in root
+sudo mkdir -p /data/db
+sudo chown `id -u` /data/db
+sudo chmod go+w /data/db
+brew search mongo
+brew install mongodb-community@3.2
+brew link --force mongodb-community@3.2
+mongod --version
+
