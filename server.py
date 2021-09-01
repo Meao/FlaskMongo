@@ -23,13 +23,19 @@ def create_phone():
         data = request.get_json(force=True)
     except:
         return jsonify({'message': 'request unavailable'}), 400
-    # check types of data json.dumps and request.get_json actually return
-    if isinstance(data, list):
-        data_created = collection.insert_many(data)
-        return data_created.inserted_ids, 201
-    else:
-        data_created = collection.insert_one(data).inserted_id
-        return data_created, 201
+    try:
+        prod = {
+            'name': data['name'],
+            'description': data['description'],
+            'parameters': data['parameters']
+        }
+        #     data_created = collection.insert_many(data)
+        #     return data_created.inserted_ids, 201
+        # else:
+        data_created = collection.insert_one(prod).inserted_id
+        return jsonify({'id assigned to new phone product': data_created}), 201
+    except:
+        return jsonify({'message': 'db error'})
 
 @app.route('/api/phone/<id>', methods=['GET'])
 def read_phone(id):
