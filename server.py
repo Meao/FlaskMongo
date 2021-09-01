@@ -20,9 +20,9 @@ def index():
 def create_phone():
     try:
         # look up if I need to check for sql injections in NoSql
-        data = json.dumps(request.get_json())
+        data = request.get_json(force=True)
     except:
-        return "request unavailable", 400
+        return jsonify({'message': 'request unavailable'}), 400
     # check types of data json.dumps and request.get_json actually return
     if isinstance(data, list):
         data_created = collection.insert_many(data)
@@ -40,8 +40,18 @@ def read_phone(id):
         return "No product found", 404
 
 @app.route('/api/phones/', methods=['GET'])
-def read_phone():
-    return "Under development"
+def read_phones():
+    try:
+        data = json.dumps(request.get_json())
+        result = {}
+        if data:
+            for product in collection.find(data):
+    except:
+        return "request unavailable", 400
+        data_fetched = collection.find({"_id": id})
+        return json.dumps(data_fetched)
+    except:
+        return "No product found", 404
 
 @app.route('/api/phones/', methods=['PUT'])
 def update_phone():
