@@ -1,4 +1,5 @@
-from flask import Flask, json, jsonify, request
+from flask import Flask, jsonify, request
+# from flask import Flask, json, jsonify, request
 import os
 from pymongo import MongoClient
 
@@ -41,31 +42,53 @@ def create_phone():
 def read_phone(id):
     try:
         data_fetched = collection.find_one({"_id": id})
-        return json.dumps(data_fetched)
+        return jsonify(data_fetched)
     except:
-        return "No product found", 404
+        return jsonify({'message': 'No product found'}), 404
 
 @app.route('/api/phones/', methods=['GET'])
 def read_phones():
     try:
-        data = json.dumps(request.get_json())
-        result = {}
-        if data:
-            for product in collection.find(data):
+        query_params = request.get_json(force=True)
+        if query_params:
+            data_fetched = collection.find(query_params)
+            if data_fetched.count() > 0:
+                return jsonify(data_fetched)
+            else:
+                return jsonify({'message': 'No products found'}), 404
+        else:
+            data_fetched = collection.find()
+            if data_fetched.count() > 0:
+                return jsonify(data_fetched)
+            else:
+                return jsonify({'message': 'No products in db'}), 404
     except:
-        return "request unavailable", 400
-        data_fetched = collection.find({"_id": id})
-        return json.dumps(data_fetched)
-    except:
-        return "No product found", 404
+        return jsonify({'message': 'request unavailable'}), 400
+    # try:
+        # result = {}
+        # productlist = []
+        # if data:
+            # for product in collection.find(data):
+            #     prod = {
+            #         'name': product['name'],
+            #         'description': product['description'],
+            #         'parameters': product['parameters']
+            #     }
+            #     productlist.append(prod)
+        # else:
+        #     data_fetched = collection.find()
+        # data_fetched = collection.find({"_id": id})
+    #     return json.dumps(data_fetched)
+    # except:
+    #     return jsonify({'message': 'No product found'}), 404
 
-@app.route('/api/phones/', methods=['PUT'])
-def update_phone():
-    return "Under development"
+# @app.route('/api/phones/', methods=['PUT'])
+# def update_phone():
+#     return "Under development"
 
-@app.route('/api/phones/', methods=['DELETE'])
-def delete_phone():
-    return "Under development"
+# @app.route('/api/phones/', methods=['DELETE'])
+# def delete_phone():
+#     return "Under development"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)
