@@ -3,19 +3,18 @@ The project features a backend for a shop using MongoDB on localhost:27017, Flas
 
 Installation:
 
+- install docker and docker-compose:
+'''
+https://www.docker.com/
+'''
 - clone project:
 """
-git clone https://github.com/
+git clone https://github.com/Meao/FlaskMongo.git
 """
-- create venv:
+- build and run:
 ```
-python3 -m venv env
-source env/bin/activate
+docker-compose up -d
 ```
-- install requirements:
-pip install -r requirements.txt
-- start server:
-python "server.py"
 
 API usage:
 
