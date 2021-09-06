@@ -12,8 +12,21 @@ client = MongoClient("mongo:27017")
 # collection = db['phones']
 db = client.productsdb
 
+
+@app.route('/testdb/')
+def testdb():
+    try:
+        restest = client.test_database
+        resdb = []
+        for db_info in client.list_database_names():
+            resdb.append(db_info)
+    except:
+        return jsonify({'message': 'Server not available'})
+    return jsonify({'test_database': restest, 
+    'dbs': resdb})
+
 @app.route('/')
-def todo():
+def todoindex():
     try:
         client.admin.command('ismaster')
     except:
@@ -73,4 +86,3 @@ def read_phones():
    
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)
-
